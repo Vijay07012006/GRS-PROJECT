@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API = "https://grs-3.onrender.com/api";
+const API = "https://grs-wiu6.vercel.app/api";
 
 const Logout = () => {
   const [loading, setLoading] = useState(false);

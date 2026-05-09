@@ -18,7 +18,7 @@ const Register = () => {
     e.preventDefault();
     try {
       // ✅ URL fix kiya
-      const res = await axios.post("https://grs-5.onrender.com/api/student/register", formData);
+      const res = await axios.post("https://grs-wiu6.vercel.app/api/student/register", formData);
  if (res.data.msg === "Student added successfully") {
   alert("Registration successful!");
 

@@ -27,7 +27,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('https://grs-3.onrender.com/api/student/login', {
+      const res = await fetch('https://grs-wiu6.vercel.app/api/student/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
