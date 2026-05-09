@@ -28,7 +28,10 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:5174',
-    'https://grs-71qn.vercel.app'
+    'https://grs-71qn.vercel.app',
+    'https://grs-ugdn.vercel.app',
+    'https://grs-theta.vercel.app',
+    'https://grs-5.onrender.com'
   ],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true
