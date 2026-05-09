@@ -66,13 +66,5 @@ app.use((err, req, res, next) => {
     message: 'Internal Server Error'
   });
 });
-<<<<<<< HEAD
-// server start 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-=======
 
 module.exports = app;
->>>>>>> 11c6443 (Responsive design fixed)

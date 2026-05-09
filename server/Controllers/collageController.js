@@ -1,42 +1,106 @@
-const Collage = require('../model/collageModel');
+const Collage = require("../model/collage");
 
-// Get all colleges
-const getAllColleges = async (req, res) => {
+// ==========================
+// Get All Colleges
+// ==========================
+exports.getAllCollages = async (req, res) => {
   try {
-    const colleges = await Collage.find();
-    res.status(200).json({ success: true, data: colleges });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    const data = await Collage.find();
+    res.json({
+      msg: "collage fetched",
+      data: data,
+    });
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      msg: "collage not fetched",
+    });
   }
 };
 
-// Create college
-const createCollege = async (req, res) => {
+// ==========================
+// Add College
+// ==========================
+exports.addCollage = async (req, res) => {
   try {
-    const { code, name, location } = req.body;
+    const { name, code, location } = req.body;
 
-    if (!code || !name) {
-      return res.status(400).json({ success: false, message: "Code and name are required" });
+    const data = new Collage({
+      name,
+      code,
+      location,
+    });
+
+    await data.save();
+
+    res.json({
+      msg: "collage is added successfully",
+    });
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      msg: err.message || "collage not added",
+    });
+  }
+};
+
+// ==========================
+// Update College
+// ==========================
+exports.updateCollage = async (req, res) => {
+  try {
+    const data = await Collage.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!data) {
+      return res.status(404).json({
+        msg: "collage not found",
+      });
     }
 
-    const college = await Collage.create({ code, name, location });
-    res.status(201).json({ success: true, data: college });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.json({
+      msg: "collage updated successfully",
+      data,
+    });
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      msg: "collage not updated",
+    });
   }
 };
 
-// Delete college
-const deleteCollege = async (req, res) => {
+// ==========================
+// Delete College
+// ==========================
+exports.deleteCollage = async (req, res) => {
   try {
-    const college = await Collage.findByIdAndDelete(req.params.id);
-    if (!college) {
-      return res.status(404).json({ success: false, message: "College not found" });
+    const data = await Collage.findByIdAndDelete(req.params.id);
+
+    if (!data) {
+      return res.status(404).json({
+        msg: "collage not found",
+      });
     }
-    res.status(200).json({ success: true, message: "College deleted" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+
+    res.json({
+      msg: "collage deleted successfully",
+    });
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      msg: "collage not delete",
+    });
   }
 };
-
-module.exports = { getAllColleges, createCollege, deleteCollege };  
