@@ -5,7 +5,9 @@ const getStudentComplaints = async (req, res) => {
     try {
         const data = await Complaint.find({
             studentId: req.params.studentId
-        }).sort({ createdAt: -1 });
+        })
+        .populate('complaintType', 'name')
+        .sort({ createdAt: -1 });
 
         res.json({ msg: "Fetched", data });
 

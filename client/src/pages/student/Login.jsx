@@ -27,7 +27,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('https://grs-wiu6.vercel.app/api/student/login', {
+      const res = await fetch('http://localhost:5000/api/student/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -38,13 +38,22 @@ const Login = () => {
 
       const json = await res.json();
 
-      if (res.ok) {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('studentName', json.name);
-        localStorage.setItem('studentId', json.id);
-        localStorage.setItem('token', json.token);
-        navigate('/student/dashboard');
-      } else {
+    // ✅ Naya — sab possible formats handle karta hai
+if (res.ok) {
+// ✅ BAAD — yeh lagao
+const id = json.studentId;
+const name = json.name;
+const token = json.token;
+  // Debug ke liye — fix hone ke baad hata sakte ho
+  console.log("Login response:", json);
+  console.log("Saved studentId:", id);
+
+  localStorage.setItem('isLoggedIn', 'true');
+  localStorage.setItem('studentName', name);
+  localStorage.setItem('studentId', id);
+  localStorage.setItem('token', token);
+  navigate('/student/dashboard');
+} else {
         setError(json.msg || 'Invalid email ya password.');
         setLoading(false);
       }

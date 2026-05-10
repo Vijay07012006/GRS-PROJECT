@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API = "https://grs-3.onrender.com/api";
+const API = "http://localhost:5000/api";
 const statusColors = {
   pending: { bg: "#FFFBEB", color: "#D97706", dot: "#F59E0B" },
   "in-progress": { bg: "#EFF6FF", color: "#2563EB", dot: "#3B82F6" },
@@ -159,30 +159,21 @@ const StudentDashboard = () => {
         body: JSON.stringify(body),
       });
 
-      if (res.ok) {
-        const json = await res.json();
-        const matchedType = complaintTypes.find((t) => t._id === selectedType);
-        const newComplaint = json.data || {
-          _id: "new" + Date.now(),
-          complaintText,
-          status: "pending",
-          createdAt: new Date().toISOString(),
-          complaintType: matchedType || { name: "General" },
-          adminResponse: "",
-        };
-        setComplaints((prev) => [newComplaint, ...prev]);
-        setSubmitMsg("✅ Complaint registered successfully!");
-        setComplaintText("");
-        setSelectedType("");
-      } else {
-        const errData = await res.json().catch(() => ({}));
-        setSubmitMsg(`❌ Error: ${errData.msg || "Failed to submit"}`);
-      }
-    } catch {
-      setSubmitMsg("❌ Server se connect nahi ho saka.");
-    } finally {
-      setSubmitting(false);
-    }
+   if (res.ok) {
+  setSubmitMsg("✅ Complaint registered successfully!");
+  setComplaintText("");
+  setSelectedType("");
+  const currentId = studentId || localStorage.getItem("studentId");
+  if (currentId) fetchComplaints(currentId);
+} else {
+  const errData = await res.json().catch(() => ({}));
+  setSubmitMsg(`❌ Error: ${errData.msg || "Failed to submit"}`);
+}
+} catch {
+  setSubmitMsg("❌ Server se connect nahi ho saka.");
+} finally {
+  setSubmitting(false);
+}
   };
 
   const handleUpdateProfile = async () => {

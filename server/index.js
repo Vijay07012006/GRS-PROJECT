@@ -29,7 +29,7 @@ app.use(cors({
 }));
 
 // ✅ OPTIONS preflight handle karo
-app.options('*', cors());
+app.options('/:any', cors());
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/college', collegeRoutes);

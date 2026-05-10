@@ -18,7 +18,7 @@ const Register = () => {
     e.preventDefault();
     try {
       // ✅ URL fix kiya
-      const res = await axios.post("https://grs-wiu6.vercel.app/api/student/register", formData);
+      const res = await axios.post("http://localhost:5000/api/student/register", formData);
  if (res.data.msg === "Student added successfully") {
   alert("Registration successful!");
 
@@ -28,7 +28,7 @@ const Register = () => {
   localStorage.setItem("studentId", res.data.studentId);
 
   // ✅ redirect
-  navigate("/student/dashboard");
+ navigate("/login");
 }
  else {
         alert(res.data.msg);
@@ -81,9 +81,12 @@ const Register = () => {
             <div>
               <label style={styles.label}>Course</label>
               <select style={styles.input} name="course" onChange={handleChange}>
+                <option>B.Tech</option>
+                <option>M.Tech</option>
                 <option>BCA</option>
                 <option>MCA</option>
-                <option>B.Tech</option>
+                <option>BBA</option>
+                <option>MBA</option>
               </select>
             </div>
           </div>

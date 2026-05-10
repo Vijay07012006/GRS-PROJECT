@@ -1,7 +1,7 @@
-const app = require('./index');
 const dotenv = require('dotenv');
+dotenv.config(); // ← PEHLE environment variables load karo
 
-dotenv.config();
+const app = require('./index'); // ← AB index.js load hoga, MONGO_URI available hoga
 
 const PORT = process.env.PORT || 5000;
 

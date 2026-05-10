@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const styles = `
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Inter', system-ui, sans-serif; }
-.wrap { display: flex; min-height: 100vh;flex-wrap: wrap; font-family: 'Inter', system-ui, sans-serif; }
+.wrap { display: flex; min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; }
 .sidebar { width: 240px; background: #0f172a; display: flex; flex-direction: column; padding: 24px 14px; flex-shrink: 0; overflow-y: auto; }
 .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 28px; border-bottom: 1px solid #1e293b; margin-bottom: 16px; }
 .brand-icon { width: 36px; height: 36px; border-radius: 10px; background: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; flex-shrink: 0; }
@@ -15,9 +15,11 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 .spacer { flex: 1; }
 .logout { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; cursor: pointer; color: #f87171; font-size: 14px; margin-top: 8px; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; font-family: inherit; }
 .logout:hover { background: rgba(248,113,113,0.08); }
-.main { flex: 1; background: #f8fafc; overflow-y: auto; display: flex; flex-direction: column; }
+.main { flex: 1; background: #f8fafc; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
 .topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 50; }
 .topbar-title { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.hamburger-btn { display: none; align-items: center; justify-content: center; background: none; border: 1px solid #e2e8f0; border-radius: 7px; width: 36px; height: 36px; font-size: 18px; cursor: pointer; flex-shrink: 0; line-height: 1; }
 .content { padding: 32px; max-width: 1200px; margin: 0 auto; width: 100%; }
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
 .stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px; }
@@ -29,19 +31,19 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 .user-table { width: 100%; border-collapse: separate; border-spacing: 0; }
 .user-table th { background: #f8fafc; padding: 10px 16px; text-align: left; font-size: 11px; color: #64748b; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; font-weight: 700; letter-spacing: 0.04em; }
 .user-table td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #0f172a; }
-.btn-primary { background: #1d4ed8; color: #fff; padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; transition: opacity 0.15s; }
+.btn-primary { background: #1d4ed8; color: #fff; padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; transition: opacity 0.15s; display: inline-flex; align-items: center; justify-content: center; }
 .btn-primary:hover { opacity: 0.88; }
 .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
-.btn-danger { background: #fef2f2; color: #dc2626; padding: 6px 14px; border-radius: 6px; border: 1px solid #fecaca; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; transition: background 0.15s; }
+.btn-danger { background: #fef2f2; color: #dc2626; padding: 6px 14px; border-radius: 6px; border: 1px solid #fecaca; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; transition: background 0.15s; display: inline-flex; align-items: center; justify-content: center; }
 .btn-danger:hover { background: #fee2e2; }
 .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
 .inp { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; font-size: 14px; outline: none; transition: border 0.2s; background: #fff; color: #0f172a; }
 .inp:focus { border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29,78,216,0.1); }
-.btn-resolve { color: #15803d; border: 1px solid #86efac; background: #f0fdf4; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+.btn-resolve { color: #15803d; border: 1px solid #86efac; background: #f0fdf4; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; }
 .btn-resolve:hover { background: #dcfce7; }
-.btn-pending  { color: #1e40af; border: 1px solid #93c5fd; background: #eff6ff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+.btn-pending  { color: #1e40af; border: 1px solid #93c5fd; background: #eff6ff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; }
 .btn-pending:hover { background: #dbeafe; }
-.btn-reject   { color: #b91c1c; border: 1px solid #fca5a5; background: #fef2f2; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+.btn-reject   { color: #b91c1c; border: 1px solid #fca5a5; background: #fef2f2; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; }
 .btn-reject:hover { background: #fee2e2; }
 .badge-resolved   { background: #f0fdf4; color: #15803d; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 .badge-pending    { background: #fffbeb; color: #92400e; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
@@ -59,36 +61,62 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 .user-chip { margin-top: auto; border-top: 1px solid #1e293b; padding-top: 16px; }
 .user-chip-inner { padding: 10px 12px; background: #1e293b; border-radius: 10px; display: flex; align-items: center; gap: 10px; }
 .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; flex-shrink: 0; }
-@media (max-width: 768px) {
+.sidebar-close-btn { display: none; background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; margin-left: auto; line-height: 1; padding: 2px 4px; }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
 
-  .wrap {
-    flex-direction: column;
-  }
+@media (max-width: 768px) {
+  .wrap { flex-direction: row; }
 
   .sidebar {
-    width: 100%;
-    height: auto;
-    padding: 14px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding: 16px 12px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .overlay.open {
+    display: block;
+  }
+
+  .sidebar-close-btn {
+    display: block;
+  }
+
+  .hamburger-btn {
+    display: flex;
   }
 
   .main {
     width: 100%;
+    margin-left: 0;
   }
 
   .topbar {
-    padding: 0 16px;
-    flex-wrap: wrap;
-    gap: 10px;
+    padding: 0 14px;
     height: auto;
-    min-height: 60px;
+    min-height: 56px;
+  }
+
+  .topbar-college {
+    display: none;
   }
 
   .content {
-    padding: 16px;
+    padding: 14px;
   }
 
   .stat-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
   .form-box {
@@ -98,12 +126,17 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 
   .form-field {
     width: 100%;
+    min-width: unset;
+  }
+
+  .table-wrapper {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .user-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+    min-width: 500px;
   }
 
   .section-head {
@@ -112,22 +145,19 @@ body { font-family: 'Inter', system-ui, sans-serif; }
     gap: 10px;
   }
 
-  .nav-item {
-    padding: 12px;
-  }
-
-  .btn-primary,
-  .btn-danger,
   .btn-resolve,
   .btn-pending,
   .btn-reject {
-    width: 100%;
-    justify-content: center;
+    flex: 1;
+  }
+
+  .section-card {
+    padding: 16px;
   }
 }
 `;
 
-const API = "https://grs-3.onrender.com/api";
+const API = "http://localhost:5000/api";
 
 // ─── ForumAdmin ──────────────────────────────────────────────────────────────
 function ForumAdmin({ posts, fetchData }) {
@@ -238,20 +268,22 @@ function SessionManagement({ sessions, fetchData }) {
       {sessions.length === 0 ? (
         <p style={{ color: "#94a3b8", textAlign: "center", padding: "40px" }}>📅 Koi session nahi hai. Upar form se add karein.</p>
       ) : (
-        <table className="user-table">
-          <thead><tr><th>#</th><th>Name</th><th>Description</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody>
-            {sessions.map((s, idx) => (
-              <tr key={s._id}>
-                <td style={{ color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
-                <td style={{ fontWeight: 500 }}>{s.name}</td>
-                <td style={{ color: "#64748b" }}>{s.description || "—"}</td>
-                <td>{s.isActive ? <span className="badge-resolved">✅ Active</span> : <span className="badge-rejected">❌ Closed</span>}</td>
-                <td>{s.isActive && <button className="btn-danger" onClick={() => handleClose(s._id)} disabled={closingId === s._id}>{closingId === s._id ? "Closing..." : "Close"}</button>}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="table-wrapper">
+          <table className="user-table">
+            <thead><tr><th>#</th><th>Name</th><th>Description</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              {sessions.map((s, idx) => (
+                <tr key={s._id}>
+                  <td style={{ color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
+                  <td style={{ fontWeight: 500 }}>{s.name}</td>
+                  <td style={{ color: "#64748b" }}>{s.description || "—"}</td>
+                  <td>{s.isActive ? <span className="badge-resolved">✅ Active</span> : <span className="badge-rejected">❌ Closed</span>}</td>
+                  <td>{s.isActive && <button className="btn-danger" onClick={() => handleClose(s._id)} disabled={closingId === s._id}>{closingId === s._id ? "Closing..." : "Close"}</button>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -366,20 +398,22 @@ function CollegeManagement({ colleges, fetchData }) {
       {colleges.length === 0 ? (
         <p style={{ color: "#94a3b8", textAlign: "center", padding: "40px" }}>🏫 Koi college nahi hai. Upar form se add karein.</p>
       ) : (
-        <table className="user-table">
-          <thead><tr><th>#</th><th>Code</th><th>Name</th><th>Location</th><th>Action</th></tr></thead>
-          <tbody>
-            {colleges.map((c, idx) => (
-              <tr key={c._id}>
-                <td style={{ color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
-                <td><span className="code-badge">{c.code}</span></td>
-                <td style={{ fontWeight: 500 }}>{c.name}</td>
-                <td style={{ color: "#64748b" }}>{c.location || "—"}</td>
-                <td><button className="btn-danger" onClick={() => handleDelete(c._id)} disabled={deletingId === c._id}>{deletingId === c._id ? "Deleting..." : "Delete"}</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="table-wrapper">
+          <table className="user-table">
+            <thead><tr><th>#</th><th>Code</th><th>Name</th><th>Location</th><th>Action</th></tr></thead>
+            <tbody>
+              {colleges.map((c, idx) => (
+                <tr key={c._id}>
+                  <td style={{ color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
+                  <td><span className="code-badge">{c.code}</span></td>
+                  <td style={{ fontWeight: 500 }}>{c.name}</td>
+                  <td style={{ color: "#64748b" }}>{c.location || "—"}</td>
+                  <td><button className="btn-danger" onClick={() => handleDelete(c._id)} disabled={deletingId === c._id}>{deletingId === c._id ? "Deleting..." : "Delete"}</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -389,6 +423,7 @@ function CollegeManagement({ colleges, fetchData }) {
 export default function AdminDashboard() {
   const [active, setActive] = useState("dashboard");
   const [loading, setLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data, setData] = useState({ complaints: [], students: [], colleges: [], sessions: [], logs: [], forumPosts: [] });
 
   const fetchData = async () => {
@@ -409,7 +444,26 @@ export default function AdminDashboard() {
 
   useEffect(() => { fetchData(); }, []);
 
-  const handleLogout = () => { localStorage.removeItem("token"); localStorage.removeItem("user"); window.location.href = "/login"; };
+  // Body scroll lock jab sidebar open ho
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [sidebarOpen]);
+
+  const handleNavClick = (id) => {
+    setActive(id);
+    setSidebarOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/login";
+  };
 
   const renderContent = () => {
     switch (active) {
@@ -429,17 +483,19 @@ export default function AdminDashboard() {
         return (
           <div className="section-card">
             <div className="section-head"><h2>Blocked Users</h2></div>
-            <table className="user-table">
-              <thead><tr><th>Name</th><th>Email</th><th>Reason</th><th>Action</th></tr></thead>
-              <tbody>
-                {data.students.filter(s => s.isBlocked).length === 0
-                  ? <tr><td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "30px" }}>Koi blocked user nahi hai</td></tr>
-                  : data.students.filter(s => s.isBlocked).map(s => (
-                    <tr key={s._id}><td>{s.name}</td><td>{s.email}</td><td>Terms Violation</td><td><button className="btn-primary">Unblock</button></td></tr>
-                  ))
-                }
-              </tbody>
-            </table>
+            <div className="table-wrapper">
+              <table className="user-table">
+                <thead><tr><th>Name</th><th>Email</th><th>Reason</th><th>Action</th></tr></thead>
+                <tbody>
+                  {data.students.filter(s => s.isBlocked).length === 0
+                    ? <tr><td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "30px" }}>Koi blocked user nahi hai</td></tr>
+                    : data.students.filter(s => s.isBlocked).map(s => (
+                      <tr key={s._id}><td>{s.name}</td><td>{s.email}</td><td>Terms Violation</td><td><button className="btn-primary">Unblock</button></td></tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
           </div>
         );
       case "forum": return <ForumAdmin posts={data.forumPosts} fetchData={fetchData} />;
@@ -458,21 +514,23 @@ export default function AdminDashboard() {
             {data.logs.length === 0 ? (
               <p style={{ color: "#94a3b8", textAlign: "center", padding: "40px" }}>📜 Koi log nahi hai. Student login/logout kare tab dikhai dega.</p>
             ) : (
-              <table className="user-table">
-                <thead><tr><th>#</th><th>User Name</th><th>Email</th><th>Action</th><th>IP Address</th><th>Date & Time</th></tr></thead>
-                <tbody>
-                  {data.logs.map((log, idx) => (
-                    <tr key={log._id}>
-                      <td style={{ color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
-                      <td style={{ fontWeight: 500 }}>{log.userName}</td>
-                      <td style={{ color: "#64748b" }}>{log.userEmail}</td>
-                      <td>{log.action === "login" ? <span className="badge-login">🟢 Login</span> : <span className="badge-logout">🔴 Logout</span>}</td>
-                      <td style={{ color: "#64748b", fontSize: "12px", fontFamily: "monospace" }}>{log.ipAddress || "—"}</td>
-                      <td style={{ color: "#64748b", fontSize: "12px" }}>{new Date(log.createdAt).toLocaleString("en-IN")}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="table-wrapper">
+                <table className="user-table">
+                  <thead><tr><th>#</th><th>User Name</th><th>Email</th><th>Action</th><th>IP Address</th><th>Date & Time</th></tr></thead>
+                  <tbody>
+                    {data.logs.map((log, idx) => (
+                      <tr key={log._id}>
+                        <td style={{ color: "#94a3b8", fontWeight: 600 }}>{idx + 1}</td>
+                        <td style={{ fontWeight: 500 }}>{log.userName}</td>
+                        <td style={{ color: "#64748b" }}>{log.userEmail}</td>
+                        <td>{log.action === "login" ? <span className="badge-login">🟢 Login</span> : <span className="badge-logout">🔴 Logout</span>}</td>
+                        <td style={{ color: "#64748b", fontSize: "12px", fontFamily: "monospace" }}>{log.ipAddress || "—"}</td>
+                        <td style={{ color: "#64748b", fontSize: "12px" }}>{new Date(log.createdAt).toLocaleString("en-IN")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         );
@@ -505,17 +563,30 @@ export default function AdminDashboard() {
     <div className="wrap">
       <style>{styles}</style>
 
-      <div className="sidebar">
+      {/* Overlay — mobile pe sidebar ke peeche dark background */}
+      <div
+        className={`overlay ${sidebarOpen ? "open" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      {/* Sidebar */}
+      <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="brand">
           <div className="brand-icon">A</div>
           <div className="brand-text">Admin Panel</div>
+          {/* Mobile close button */}
+          <button className="sidebar-close-btn" onClick={() => setSidebarOpen(false)}>✕</button>
         </div>
 
         {navGroups.map(group => (
           <div key={group.label}>
             <div className="nav-group-label">{group.label}</div>
             {group.items.map(item => (
-              <div key={item.id} className={`nav-item ${active === item.id ? "active" : ""}`} onClick={() => { setActive(item.id);}}>
+              <div
+                key={item.id}
+                className={`nav-item ${active === item.id ? "active" : ""}`}
+                onClick={() => handleNavClick(item.id)}
+              >
                 <span style={{ fontSize: "15px" }}>{item.icon}</span>
                 <span>{item.label}</span>
               </div>
@@ -537,11 +608,19 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      {/* Main content */}
       <div className="main">
         <div className="topbar">
-          <span className="topbar-title">{pageTitle}</span>
-          <span style={{ fontSize: "13px", color: "#64748b" }}>  Mohd   Hasan P  G College</span>
+          <div className="topbar-left">
+            {/* Hamburger — sirf mobile pe dikhega */}
+            <button className="hamburger-btn" onClick={() => setSidebarOpen(true)}>☰</button>
+            <span className="topbar-title">{pageTitle}</span>
+          </div>
+          <span className="topbar-college" style={{ fontSize: "13px", color: "#64748b" }}>
+            Mohd Hasan P G College
+          </span>
         </div>
+
         <div className="content">
           {loading ? (
             <div style={{ textAlign: "center", padding: "60px", color: "#94a3b8" }}>

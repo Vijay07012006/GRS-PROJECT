@@ -1,5 +1,6 @@
 
 const Student = require("../model/student");
+const UserLog = require("../model/userLog");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -71,15 +72,72 @@ const loginStudent = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-        res.json({ msg: "Login successful", token });
+        // Log save karo
+        try {
+            await UserLog.create({
+                userId: student._id,
+                userName: student.name,
+                userEmail: student.email,
+                action: "login",
+                ipAddress: req.headers['x-forwarded-for'] || req.socket.remoteAddress || "unknown"
+            });
+        } catch (logErr) {
+            console.log("Log save nahi hua:", logErr.message);
+        }
+
+        res.json({ 
+            msg: "Login successful", 
+            token,
+            studentId: student._id,
+            name: student.name,
+            email: student.email
+        });
 
     } catch (err) {
         res.status(500).json({ msg: "Server error" });
+    }
+};
+// UPDATE PROFILE
+const updateProfile = async (req, res) => {
+    try {
+        const { studentId, name } = req.body;
+        if (!studentId || !name) {
+            return res.status(400).json({ msg: "studentId aur name required hai" });
+        }
+        await Student.findByIdAndUpdate(studentId, { name });
+        res.json({ msg: "Profile updated successfully" });
+    } catch (err) {
+        res.status(500).json({ msg: "Profile update nahi ho saka", error: err.message });
+    }
+};
+
+// CHANGE PASSWORD
+const changePassword = async (req, res) => {
+    try {
+        const { studentId, oldPassword, newPassword } = req.body;
+        if (!studentId || !oldPassword || !newPassword) {
+            return res.status(400).json({ msg: "Sab fields required hain" });
+        }
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ msg: "Student nahi mila" });
+        }
+        const isMatch = await bcrypt.compare(oldPassword, student.password);
+        if (!isMatch) {
+            return res.status(400).json({ msg: "Purana password galat hai" });
+        }
+        student.password = await bcrypt.hash(newPassword, 10);
+        await student.save();
+        res.json({ msg: "Password changed successfully" });
+    } catch (err) {
+        res.status(500).json({ msg: "Password change nahi ho saka", error: err.message });
     }
 };
 
 module.exports = {
     getStudents,
     registerStudent,
-    loginStudent
+    loginStudent,
+    updateProfile,
+    changePassword
 };
