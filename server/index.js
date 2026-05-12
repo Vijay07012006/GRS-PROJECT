@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-
 const adminRoutes = require('./routes/adminRoute');
 const collegeRoutes = require('./routes/collageRoute');
 const complaintRoutes = require('./routes/complaintRoute');
@@ -19,17 +19,29 @@ const app = express();
 connectDB();
 
 app.use(express.json());
+app.use(morgan("dev"));
+
 
 // ✅ CORS - pehle rakho
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: false  // '*' ke saath credentials false hona chahiye
-}));
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
 
 // ✅ OPTIONS preflight handle karo
-app.options('/:any', cors());
+app.use(cors(corsOptions));
+
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/college', collegeRoutes);

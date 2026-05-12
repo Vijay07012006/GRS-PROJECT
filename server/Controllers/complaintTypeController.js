@@ -1,60 +1,69 @@
 const ComplaintType = require('../model/ComplaintType');
 
-// CREATE
+// CREATE ✅
 const createComplaintType = async (req, res) => {
-    try {
-        const { name, description } = req.body;
-        const data = await ComplaintType.findOne({ name });
-        if (data) {
-            return res.json({ msg: "Complaint Type already Exist" });
-        }
-        const saveComplaint = new ComplaintType({ name, description });
-        await saveComplaint.save();
-        res.json({ msg: "Complaint type added successfully", data: saveComplaint });
-    } catch (err) {
-        console.log(err);
-        res.json({ msg: "Complaint type not added" });
+  try {
+   const { name, description } = req.body;
+   
+   if (!name) {
+      return res.status(400).json({ msg: "Name is required" });
     }
+
+    const existing = await ComplaintType.findOne({ name });
+    if (existing) {
+      return res.status(400).json({ msg: "Complaint type already exists" });
+    }
+
+   
+   
+   const newType = await ComplaintType.create({ name, description: description || "" });
+    res.status(201).json({ msg: "Complaint type created", data: newType });
+
+  } catch (err) {
+    console.error("createComplaintType error:", err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
 };
 
-// READ
+// READ ✅
 const getComplaintTypes = async (req, res) => {
-    try {
-        const data = await ComplaintType.find().lean();
-        res.json(data);
-    } catch (err) {
-        console.log(err);
-        res.json({ msg: "Complaint type not fetched" });
-    }
+  try {
+    const types = await ComplaintType.find({});
+    console.log("DB se types:", types);
+    res.status(200).json({ msg: "Complaint types fetched", data: types });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Server error" });
+  }
 };
 
-// UPDATE
+// UPDATE ✅
 const updateComplaintType = async (req, res) => {
-    try {
-        const updated = await ComplaintType.findByIdAndUpdate(
-            req.params.id, req.body, { new: true }
-        );
-        res.json({ msg: "Complaint type updated", data: updated });
-    } catch (err) {
-        console.log(err);
-        res.json({ msg: "Complaint type not updated" });
-    }
+  try {
+    const updated = await ComplaintType.findByIdAndUpdate(
+      req.params.id, req.body, { new: true }
+    );
+    res.json({ msg: "Complaint type updated", data: updated });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Complaint type not updated" });
+  }
 };
 
-// DELETE
+// DELETE ✅
 const deleteComplaintType = async (req, res) => {
-    try {
-        await ComplaintType.findByIdAndDelete(req.params.id);
-        res.json({ msg: "Complaint type deleted" });
-    } catch (err) {
-        console.log(err);
-        res.json({ msg: "Complaint type not deleted" });
-    }
+  try {
+    await ComplaintType.findByIdAndDelete(req.params.id);
+    res.json({ msg: "Complaint type deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Complaint type not deleted" });
+  }
 };
 
 module.exports = {
-    createComplaintType,
-    getComplaintTypes,
-    updateComplaintType,
-    deleteComplaintType
+  createComplaintType,
+  getComplaintTypes,
+  updateComplaintType,
+  deleteComplaintType
 };

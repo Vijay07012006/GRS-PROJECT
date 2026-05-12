@@ -60,7 +60,7 @@ exports.loginAdmin = async (req, res) => {
     const { email, password } = req.body;
 
     // Check email
-    const data = await Admin.findOne({ email });
+const admin = await Admin.findOne({}).select("+password");
 
     if (!data) {
       return res.status(404).json({
@@ -102,5 +102,38 @@ exports.loginAdmin = async (req, res) => {
     res.status(500).json({
       msg: "Try again later",
     });
+  }
+};
+// ==========================
+// Change Admin Password
+// ==========================
+exports.changeAdminPassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ msg: "Old aur New password dono required hain" });
+    }
+
+    // ✅ .select("+password") add kiya
+    const admin = await Admin.findOne({}).select("+password");
+    
+    if (!admin) {
+      return res.status(404).json({ msg: "Admin nahi mila" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Old password galat hai" });
+    }
+
+    admin.password = await bcrypt.hash(newPassword, 10);
+    await admin.save();
+
+    res.json({ msg: "Password successfully update ho gaya!" });
+
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ msg: "Server Error", error: err.message });
   }
 };

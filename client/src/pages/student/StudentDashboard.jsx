@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const API = "http://localhost:5000/api";
+
+
 const statusColors = {
   pending: { bg: "#FFFBEB", color: "#D97706", dot: "#F59E0B" },
   "in-progress": { bg: "#EFF6FF", color: "#2563EB", dot: "#3B82F6" },
@@ -105,18 +107,25 @@ const StudentDashboard = () => {
       setLoading(false);
     }
   };
-
-  const fetchComplaintTypes = async () => {
-    try {
-      const res = await fetch(`${API}/complaint-type`);
-      if (!res.ok) throw new Error();
-      const json = await res.json();
-      const arr = Array.isArray(json) ? json : (json.data ?? []);
-      setComplaintTypes(arr);
-    } catch {
-      setComplaintTypes([]);
+const fetchComplaintTypes = async () => {
+  try {
+    const res = await fetch(`${API}/complaint-type`);
+    if (!res.ok) throw new Error();
+    const json = await res.json();
+    console.log("FULL JSON:", JSON.stringify(json));
+    const arr = Array.isArray(json) ? json : (json.data ?? []);
+    
+    // ✅ Sirf real API data use karo, fallback bilkul mat do
+    setComplaintTypes(arr);
+    
+    if (arr.length === 0) {
+      console.warn("⚠️ Koi complaint types nahi mile DB mein");
     }
-  };
+  } catch (err) {
+    console.error("Complaint types fetch error:", err);
+    setComplaintTypes([]); // ✅ Empty rakhो — fake data mat do
+  }
+};
 
   const fetchForumPosts = async () => {
     try {
@@ -136,45 +145,54 @@ const StudentDashboard = () => {
   };
 
   const handleAddComplaint = async () => {
-    setSubmitMsg("");
-    if (!complaintText.trim()) {
-      setSubmitMsg("❗ Please enter complaint text.");
-      return;
-    }
-    if (!selectedType) {
-      setSubmitMsg("❗ Please select a complaint category.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const body = {
-        complaintText,
-        studentId,
-        complaintType: selectedType,
-      };
+  setSubmitMsg("");
 
-      const res = await fetch(`${API}/complaint`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+  if (!complaintText.trim()) {
+    setSubmitMsg("❗ Please enter complaint text.");
+    return;
+  }
+  if (!selectedType) {
+    setSubmitMsg("❗ Please select a complaint category.");
+    return;
+  }
 
-   if (res.ok) {
-  setSubmitMsg("✅ Complaint registered successfully!");
-  setComplaintText("");
-  setSelectedType("");
-  const currentId = studentId || localStorage.getItem("studentId");
-  if (currentId) fetchComplaints(currentId);
-} else {
-  const errData = await res.json().catch(() => ({}));
-  setSubmitMsg(`❌ Error: ${errData.msg || "Failed to submit"}`);
-}
-} catch {
-  setSubmitMsg("❌ Server se connect nahi ho saka.");
-} finally {
-  setSubmitting(false);
-}
-  };
+  // ✅ Safety check — ObjectId 24 char ka hota hai
+  const isValidObjectId = /^[a-fA-F0-9]{24}$/.test(selectedType);
+  if (!isValidObjectId) {
+    setSubmitMsg("❗ Invalid category selected. Please re-select.");
+    return;
+  }
+
+  setSubmitting(true);
+  try {
+    const body = {
+      complaintText,
+      studentId,
+      complaintType: selectedType,  // ✅ Ab ye ObjectId hoga
+    };
+
+    const res = await fetch(`${API}/complaint`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      setSubmitMsg("✅ Complaint registered successfully!");
+      setComplaintText("");
+      setSelectedType("");
+      const currentId = studentId || localStorage.getItem("studentId");
+      if (currentId) fetchComplaints(currentId);
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      setSubmitMsg(`❌ Error: ${errData.msg || "Failed to submit"}`);
+    }
+  } catch {
+    setSubmitMsg("❌ Server se connect nahi ho saka.");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const handleUpdateProfile = async () => {
     setProfileMsg("");

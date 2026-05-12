@@ -159,6 +159,80 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 
 const API = "http://localhost:5000/api";
 
+// ─── ChangePassword ──────────────────────────────────────────────────────────
+function ChangePassword() {
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [msg, setMsg] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdate = async () => {
+    setMsg(null);
+    if (!oldPassword || !newPassword) {
+      setMsg({ type: "error", text: "❗ Dono fields fill karna zaroori hai" });
+      return;
+    }
+    if (newPassword.length < 6) {
+      setMsg({ type: "error", text: "❗ New password kam se kam 6 characters ka hona chahiye" });
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/admin/change-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ oldPassword, newPassword }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setMsg({ type: "success", text: "✅ Password successfully update ho gaya!" });
+        setOldPassword("");
+        setNewPassword("");
+      } else {
+        setMsg({ type: "error", text: `❌ ${json.msg || "Password update nahi ho saka"}` });
+      }
+    } catch {
+      setMsg({ type: "error", text: "❌ Server se connect nahi ho saka" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="section-card" style={{ maxWidth: "480px" }}>
+      <div className="section-head"><h2>Change Password</h2></div>
+      <div style={{ marginBottom: "14px" }}>
+        <label style={{ fontSize: "12px", color: "#64748b", fontWeight: "700", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>
+          Old Password
+        </label>
+        <input
+          className="inp"
+          type="password"
+          placeholder="Current password dalein"
+          value={oldPassword}
+          onChange={e => setOldPassword(e.target.value)}
+        />
+      </div>
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ fontSize: "12px", color: "#64748b", fontWeight: "700", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>
+          New Password
+        </label>
+        <input
+          className="inp"
+          type="password"
+          placeholder="Naya password dalein (min 6 char)"
+          value={newPassword}
+          onChange={e => setNewPassword(e.target.value)}
+        />
+      </div>
+      {msg && <div className={`msg ${msg.type}`}>{msg.text}</div>}
+      <button className="btn-primary" onClick={handleUpdate} disabled={loading}>
+        {loading ? "⏳ Updating..." : "🔒 Update Password"}
+      </button>
+    </div>
+  );
+}
+
 // ─── ForumAdmin ──────────────────────────────────────────────────────────────
 function ForumAdmin({ posts, fetchData }) {
   const [replyText, setReplyText] = useState({});
@@ -500,13 +574,7 @@ export default function AdminDashboard() {
         );
       case "forum": return <ForumAdmin posts={data.forumPosts} fetchData={fetchData} />;
       case "password":
-        return (
-          <div className="section-card" style={{ maxWidth: "480px" }}>
-            <div className="section-head"><h2>Change Password</h2></div>
-            <div style={{ marginBottom: "14px" }}><label style={{ fontSize: "12px", color: "#64748b", fontWeight: "700", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>New Password</label><input className="inp" type="password" /></div>
-            <button className="btn-primary">Update Password</button>
-          </div>
-        );
+        return <ChangePassword />;
       case "user-logs":
         return (
           <div className="section-card">
