@@ -59,17 +59,15 @@ exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check email
-const admin = await Admin.findOne({}).select("+password");
+    const admin = await Admin.findOne({ email });
 
-    if (!data) {
+    if (!admin) {
       return res.status(404).json({
         msg: "Email Not Matched",
       });
     }
 
-    // Compare password
-    const isMatch = await bcrypt.compare(password, data.password);
+    const isMatch = await bcrypt.compare(password, admin.password);
 
     if (!isMatch) {
       return res.status(400).json({
@@ -77,10 +75,9 @@ const admin = await Admin.findOne({}).select("+password");
       });
     }
 
-    // Generate token
     const token = jwt.sign(
       {
-        id: data._id,
+        id: admin._id,
         role: "Admin",
       },
       process.env.JWT_SECRET,
@@ -93,14 +90,15 @@ const admin = await Admin.findOne({}).select("+password");
       msg: "Login Successfully",
       token,
       role: "Admin",
-      id: data._id,
+      id: admin._id,
     });
 
   } catch (err) {
-    console.log(err.message);
+    console.log(err);
 
     res.status(500).json({
       msg: "Try again later",
+      error: err.message,
     });
   }
 };
