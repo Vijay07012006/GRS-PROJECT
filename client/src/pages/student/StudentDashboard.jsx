@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API = "http://localhost:5000/api";
+const API = "https://grivance.onrender.com";
 
 
 const statusColors = {
@@ -92,8 +92,9 @@ const StudentDashboard = () => {
     if (!studentIdToUse) return;
     try {
       setLoading(true);
-      setComplaintsError("");
-      const res = await fetch(`${API}/complaint/student/${studentIdToUse}`);
+     const res = await fetch(
+  `${API}/api/complaint/student/${studentIdToUse}`
+);
       if (!res.ok) throw new Error("Server error");
       const json = await res.json();
       const arr = Array.isArray(json) ? json : (json.data ?? []);
@@ -109,7 +110,7 @@ const StudentDashboard = () => {
   };
 const fetchComplaintTypes = async () => {
   try {
-    const res = await fetch(`${API}/complaint-type`);
+    const res = await fetch(`${API}/api/complaint-type`);
     if (!res.ok) throw new Error();
     const json = await res.json();
     console.log("FULL JSON:", JSON.stringify(json));
@@ -131,7 +132,7 @@ const fetchComplaintTypes = async () => {
     try {
       setForumLoading(true);
       setForumError("");
-      const res = await fetch(`${API}/forum/posts`);
+      const res = await fetch(`${API}/api/forum/posts`);
       if (!res.ok) throw new Error();
       const json = await res.json();
       const arr = Array.isArray(json) ? json : (json.data ?? []);
@@ -171,7 +172,7 @@ const fetchComplaintTypes = async () => {
       complaintType: selectedType,  // ✅ Ab ye ObjectId hoga
     };
 
-    const res = await fetch(`${API}/complaint`, {
+    const res = await fetch(`${API}/api/complaint`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -197,7 +198,7 @@ const fetchComplaintTypes = async () => {
   const handleUpdateProfile = async () => {
     setProfileMsg("");
     try {
-      const res = await fetch(`${API}/student/update-profile`, {
+      const res = await fetch(`${API}/api/student/update-profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, name: profileName }),
@@ -221,7 +222,7 @@ const fetchComplaintTypes = async () => {
       return;
     }
     try {
-      const res = await fetch(`${API}/student/change-password`, {
+      const res = await fetch(`${API}/api/student/change-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, oldPassword, newPassword }),
@@ -246,7 +247,7 @@ const fetchComplaintTypes = async () => {
       return;
     }
     try {
-      const res = await fetch(`${API}/forum/posts`, {
+      const res = await fetch(`${API}/api/forum/posts/${studentId}/reply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
