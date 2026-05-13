@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { 
-  registerAdmin, 
+const {
+  registerAdmin,
   loginAdmin,
-  changeAdminPassword  // ✅ ye add karo
+  changeAdminPassword
 } = require("../Controllers/adminController");
+
+const Admin = require("../model/Admin");
 
 // REGISTER
 router.post("/register", registerAdmin);
@@ -12,7 +14,13 @@ router.post("/register", registerAdmin);
 // LOGIN
 router.post("/login", loginAdmin);
 
-// CHANGE PASSWORD  ✅ ye add karo
+// CHANGE PASSWORD
 router.post("/change-password", changeAdminPassword);
+
+// TEMPORARY ROUTE
+router.get("/all", async (req, res) => {
+  const data = await Admin.find();
+  res.json(data);
+});
 
 module.exports = router;
