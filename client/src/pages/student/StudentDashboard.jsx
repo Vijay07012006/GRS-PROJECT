@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API = "https://grivance.onrender.com";
+const API = "https://grivance.onrender.com/api";
 
 
 const statusColors = {
