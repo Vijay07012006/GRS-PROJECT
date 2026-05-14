@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API = "https://grivance.onrender.com/api";
+const API = "https://grivance.onrender.com";
 
 const Logout = () => {
   const [loading, setLoading] = useState(false);

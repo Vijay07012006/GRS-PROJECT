@@ -27,7 +27,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('https://grivance.onrender.com/api/student/login/api', {
+      const res = await fetch('https://grivance.onrender.com/api/student/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

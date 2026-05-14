@@ -18,7 +18,7 @@ const Register = () => {
     e.preventDefault();
     try {
       // ✅ URL fix kiya
-      const res = await axios.post("https://grivance.onrender.com/api/student/register/api", formData);
+      const res = await axios.post("https://grivance.onrender.com/api/student/register", formData);
  if (res.data.msg === "Student added successfully") {
   alert("Registration successful!");
 
