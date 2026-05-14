@@ -157,7 +157,7 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 }
 `;
 
-const API = "https://grivance.onrender.com";
+const API = "https://grivance.onrender.com/api";
 
 // ─── ChangePassword ──────────────────────────────────────────────────────────
 function ChangePassword() {
