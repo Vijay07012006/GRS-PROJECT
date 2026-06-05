@@ -3,6 +3,7 @@ import './App.css';
 
 // COMPONENTS
 import Protected from './Components/Protected';
+import ProtectedAdmin from './Components/ProtectedAdmin';
 
 // GENERAL PAGES
 import Home from './pages/Home';
@@ -30,8 +31,10 @@ function App() {
         <Route path='/admin-login' element={<AdminLogin />} />
 
         {/* ADMIN ROUTES */}
-        <Route path='/admin-dashboard' element={<AdminDashboard />} />
-        <Route path='/admin-logout' element={<AdLogout />} />
+        <Route element={<ProtectedAdmin />}>
+          <Route path='/admin-dashboard' element={<AdminDashboard />} />
+          <Route path='/admin-logout' element={<AdLogout />} />
+        </Route>
 
         {/* STUDENT PROTECTED ROUTES */}
         <Route path='/student' element={<Protected />}>

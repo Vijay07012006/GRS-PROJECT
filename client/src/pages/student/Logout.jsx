@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-const API = "https://grivance.onrender.com";
+const getApiUrl = () => {
+  const base = import.meta.env.VITE_API_URL || "https://grivance.onrender.com";
+  return base.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+};
+const API = getApiUrl();
 
 const Logout = () => {
   const [loading, setLoading] = useState(false);
@@ -8,11 +12,11 @@ const Logout = () => {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      const userId    = localStorage.getItem("id");
-      const userName  = localStorage.getItem("name");
-      const userEmail = localStorage.getItem("email");
+      const userId    = localStorage.getItem("studentId");
+      const userName  = localStorage.getItem("studentName");
+      const userEmail = ""; // Email not critical for logout logging
 
-      await fetch(`${API}/student/logout`, {
+      await fetch(`${API}/api/student/logout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, userName, userEmail }),
@@ -22,9 +26,9 @@ const Logout = () => {
       console.log("Logout error:", err);
     } finally {
       localStorage.removeItem("token");
-      localStorage.removeItem("id");
-      localStorage.removeItem("name");
-      localStorage.removeItem("email");
+      localStorage.removeItem("studentId");
+      localStorage.removeItem("studentName");
+      localStorage.removeItem("isLoggedIn");
       window.location.href = "/login";
     }
   };

@@ -134,10 +134,34 @@ const changePassword = async (req, res) => {
     }
 };
 
+// LOGOUT
+const logoutStudent = async (req, res) => {
+    try {
+        const { userId, userName, userEmail } = req.body;
+        if (userId) {
+            try {
+                await UserLog.create({
+                    userId,
+                    userName: userName || "Student",
+                    userEmail: userEmail || "",
+                    action: "logout",
+                    ipAddress: req.headers['x-forwarded-for'] || req.socket.remoteAddress || "unknown"
+                });
+            } catch (logErr) {
+                console.log("Logout log save nahi hua:", logErr.message);
+            }
+        }
+        res.json({ msg: "Logout successful" });
+    } catch (err) {
+        res.status(500).json({ msg: "Logout failed", error: err.message });
+    }
+};
+
 module.exports = {
     getStudents,
     registerStudent,
     loginStudent,
     updateProfile,
-    changePassword
+    changePassword,
+    logoutStudent
 };

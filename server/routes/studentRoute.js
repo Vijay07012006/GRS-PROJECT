@@ -5,7 +5,8 @@ const {
     registerStudent,
     loginStudent,
     updateProfile,      // ✅ add karo
-    changePassword      // ✅ add karo
+    changePassword,      // ✅ add karo
+    logoutStudent
 } = require("../Controllers/studentController");
 
 // GET all students
@@ -20,5 +21,6 @@ router.post("/login", loginStudent);
 // ✅ NAYE ROUTES
 router.put("/update-profile", updateProfile);
 router.post("/change-password", changePassword);
+router.post("/logout", logoutStudent);
 
 module.exports = router;

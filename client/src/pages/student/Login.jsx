@@ -27,7 +27,12 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('https://grivance.onrender.com/api/student/login', {
+      const getApiUrl = () => {
+        const base = import.meta.env.VITE_API_URL || "https://grivance.onrender.com";
+        return base.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+      };
+      const apiBase = getApiUrl();
+      const res = await fetch(`${apiBase}/api/student/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

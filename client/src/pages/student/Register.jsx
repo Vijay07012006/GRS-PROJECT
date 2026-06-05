@@ -18,7 +18,12 @@ const Register = () => {
     e.preventDefault();
     try {
       // ✅ URL fix kiya
-      const res = await axios.post("https://grivance.onrender.com/api/student/register", formData);
+      const getApiUrl = () => {
+        const base = import.meta.env.VITE_API_URL || "https://grivance.onrender.com";
+        return base.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+      };
+      const apiBase = getApiUrl();
+      const res = await axios.post(`${apiBase}/api/student/register`, formData);
  if (res.data.msg === "Student added successfully") {
   alert("Registration successful!");
 

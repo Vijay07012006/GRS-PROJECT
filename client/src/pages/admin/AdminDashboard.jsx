@@ -157,7 +157,11 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 }
 `;
 
-const API = "https://grivance.onrender.com/api";
+const getApiUrl = () => {
+  const base = import.meta.env.VITE_API_URL || "https://grivance.onrender.com";
+  return base.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+};
+const API = `${getApiUrl()}/api`;
 
 // ─── ChangePassword ──────────────────────────────────────────────────────────
 function ChangePassword() {
@@ -534,9 +538,10 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminId");
+    localStorage.removeItem("adminRole");
+    window.location.href = "/admin-login";
   };
 
   const renderContent = () => {

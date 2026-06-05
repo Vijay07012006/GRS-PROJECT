@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Premium Logout Styles
 const styles = {
@@ -82,6 +83,19 @@ const styles = {
 };
 
 const AdLogout = () => {
+  const navigate = useNavigate();
+
+  const handleConfirmLogout = () => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminId");
+    localStorage.removeItem("adminRole");
+    window.location.href = "/admin-login";
+  };
+
+  const handleCancelLogout = () => {
+    navigate("/admin-dashboard");
+  };
+
   return (
     <div style={styles.overlay}>
       <div style={styles.logoutCard}>
@@ -96,6 +110,7 @@ const AdLogout = () => {
 
         <div style={styles.btnGroup}>
           <button 
+            onClick={handleConfirmLogout}
             style={styles.confirmBtn}
             onMouseOver={(e) => e.target.style.backgroundColor = '#1E293B'}
             onMouseOut={(e) => e.target.style.backgroundColor = '#0F172A'}
@@ -104,6 +119,7 @@ const AdLogout = () => {
           </button>
           
           <button 
+            onClick={handleCancelLogout}
             style={styles.cancelBtn}
             onMouseOver={(e) => e.target.style.backgroundColor = '#F8FAFC'}
             onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}

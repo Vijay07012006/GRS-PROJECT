@@ -2,5 +2,9 @@ node_modules/
 client/node_modules/
 server/node_modules/
 .env
+client/.env
+server/.env
+dist/
+client/dist/
 fix_problems.md
 deploy.md

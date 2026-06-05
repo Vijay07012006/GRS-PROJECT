@@ -10,7 +10,7 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -21,12 +21,32 @@ const AdminLogin = () => {
 
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const getApiUrl = () => {
+        const base = import.meta.env.VITE_API_URL || "https://grivance.onrender.com";
+        return base.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+      };
+      const apiBase = getApiUrl();
+      const res = await fetch(`${apiBase}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), password })
+      });
 
-      // ✅ redirect to dashboard
-      navigate('/admin-dashboard');
-    }, 1000);
+      const json = await res.json();
+      if (res.ok) {
+        localStorage.setItem('adminToken', json.token);
+        localStorage.setItem('adminId', json.id);
+        localStorage.setItem('adminRole', 'Admin');
+        navigate('/admin-dashboard');
+      } else {
+        setError(json.msg || 'Invalid email ya password.');
+      }
+    } catch (err) {
+      setError('Server se connect nahi ho pa raha. Dobara try karein.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
