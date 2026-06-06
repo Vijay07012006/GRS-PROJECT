@@ -135,3 +135,34 @@ exports.changeAdminPassword = async (req, res) => {
     res.status(500).json({ msg: "Server Error", error: err.message });
   }
 };
+
+// ==========================
+// Seed Admin Temporarily
+// ==========================
+exports.seedAdminTemp = async (req, res) => {
+  try {
+    const adminCount = await Admin.countDocuments();
+    if (adminCount > 0) {
+      return res.status(400).json({ msg: "Admin already exists" });
+    }
+
+    const email = "admin@gmail.com";
+    const password = "adminpassword";
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newAdmin = new Admin({
+      email,
+      password: hashedPassword,
+    });
+
+    await newAdmin.save();
+    res.json({ 
+      msg: "Admin seeded successfully on production!", 
+      email, 
+      password 
+    });
+
+  } catch (err) {
+    res.status(500).json({ msg: "Seeding failed", error: err.message });
+  }
+};

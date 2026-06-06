@@ -3,7 +3,8 @@ const router = express.Router();
 const {
   registerAdmin,
   loginAdmin,
-  changeAdminPassword
+  changeAdminPassword,
+  seedAdminTemp
 } = require("../Controllers/adminController");
 
 const Admin = require("../model/Admin");
@@ -16,6 +17,9 @@ router.post("/login", loginAdmin);
 
 // CHANGE PASSWORD
 router.post("/change-password", changeAdminPassword);
+
+// SEED TEMP ROUTE
+router.get("/seed-temp", seedAdminTemp);
 
 // TEMPORARY ROUTE
 router.get("/all", async (req, res) => {
