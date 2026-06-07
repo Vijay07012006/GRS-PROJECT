@@ -420,7 +420,7 @@ function ComplaintManagement({ complaints, fetchData }) {
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                     <button className="btn-resolve" onClick={() => handleAction(c._id, "resolved")}>✅ Resolve</button>
                     <button className="btn-pending" onClick={() => handleAction(c._id, "pending")}>⏳ Pending</button>
-                    <button className="btn-reject"  onClick={() => handleAction(c._id, "rejected")}>❌ Reject</button>
+                    <button className="btn-reject" onClick={() => handleAction(c._id, "rejected")}>❌ Reject</button>
                   </div>
                 </>
               ) : (
@@ -507,7 +507,7 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const endpoints = ['complaint','student','college','session','forum/posts','user-logs'];
+      const endpoints = ['complaint', 'student', 'college', 'session', 'forum/posts', 'user-logs'];
       const results = await Promise.all(
         endpoints.map(e => fetch(`${API}/${e}`).then(async res => {
           if (!res.ok) return { data: [] };
@@ -612,22 +612,30 @@ export default function AdminDashboard() {
   };
 
   const navGroups = [
-    { label: "Core", items: [
-      { id: "dashboard", icon: "🏠", label: "Overview" },
-      { id: "college",   icon: "🏫", label: "Colleges" },
-      { id: "session",   icon: "📅", label: "Sessions" },
-    ]},
-    { label: "Management", items: [
-      { id: "complaints", icon: "📂", label: "Complaints" },
-      { id: "user-logs",  icon: "📜", label: "User Logs" },
-    ]},
-    { label: "Safety & Community", items: [
-      { id: "blocked", icon: "🚫", label: "Blocked Users" },
-      { id: "forum",   icon: "💬", label: "Forum" },
-    ]},
-    { label: "System", items: [
-      { id: "password", icon: "🔒", label: "Security" },
-    ]},
+    {
+      label: "Core", items: [
+        { id: "dashboard", icon: "🏠", label: "Overview" },
+        { id: "college", icon: "🏫", label: "Colleges" },
+        { id: "session", icon: "📅", label: "Sessions" },
+      ]
+    },
+    {
+      label: "Management", items: [
+        { id: "complaints", icon: "📂", label: "Complaints" },
+        { id: "user-logs", icon: "📜", label: "User Logs" },
+      ]
+    },
+    {
+      label: "Safety & Community", items: [
+        { id: "blocked", icon: "🚫", label: "Blocked Users" },
+        { id: "forum", icon: "💬", label: "Forum" },
+      ]
+    },
+    {
+      label: "System", items: [
+        { id: "password", icon: "🔒", label: "Security" },
+      ]
+    },
   ];
 
   const pageTitle = navGroups.flatMap(g => g.items).find(i => i.id === active)?.label || active;
@@ -690,7 +698,7 @@ export default function AdminDashboard() {
             <span className="topbar-title">{pageTitle}</span>
           </div>
           <span className="topbar-college" style={{ fontSize: "13px", color: "#64748b" }}>
-            Mohd Hasan P G College
+            IGNOU
           </span>
         </div>
 

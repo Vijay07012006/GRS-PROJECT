@@ -26,7 +26,7 @@ const Home = () => {
             <span style={{ color: '#fff', fontSize: '16px' }}>🎓</span>
           </div>
           <span style={{ fontSize: '25px', fontWeight: '600', color: '#0f172a' }}>
-            Mohd Hasan P G College Jaunpur
+            IGNOU DELHI UNIVERSITY
           </span>
         </div>
         <span style={{
@@ -137,7 +137,7 @@ const CardItem = ({ icon, iconBg, title, desc, btnLabel, btnBg, to, featured }) 
           fontSize: '11px', fontWeight: '600',
           padding: '3px 12px', borderRadius: '0 0 8px 8px'
         }}>
-         
+
         </span>
       )}
       <div style={{
